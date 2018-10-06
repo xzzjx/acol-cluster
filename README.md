@@ -10,4 +10,4 @@ Todo List:
 - [x] GAR regularization
 - [ ] train
 - [ ] get latent representation
-- [ ] acol pool
+- [x] acol pool

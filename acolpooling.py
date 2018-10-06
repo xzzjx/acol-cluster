@@ -15,7 +15,7 @@ def identity_vstack(shape):
             a = np.concatenate((a, np.identity(shape[1])), axis=0)
         return K.variable(a)
 
-class ACOLPooling(Layer):
+class AcolPooling(Layer):
     '''
     将同一个parent的softmax node相加
     '''
