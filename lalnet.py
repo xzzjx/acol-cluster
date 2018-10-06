@@ -4,6 +4,7 @@ from __future__ import division, print_function, unicode_literals
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten, Layer
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from regularizer import activity_acol
 
 def define_model(input_shape, nb_classes, acol_params, truncated=False):
     '''
