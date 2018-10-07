@@ -6,8 +6,10 @@ reproduce code for "https://arxiv.org/abs/1802.03063"
 Todo List:
 
 - [x] define model
-- [ ] transformation data for pseudo label
+- [x] transformation data for pseudo label
 - [x] GAR regularization
-- [ ] train
+- [x] train
 - [ ] get latent representation
 - [x] acol pool
+- [ ] mnist test
+- [ ] svhn test

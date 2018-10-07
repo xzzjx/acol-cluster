@@ -20,7 +20,7 @@ class AcolPooling(Layer):
     将同一个parent的softmax node相加
     '''
     def __init__(self, units, name='AcolPooling', **kwargs):
-        super(ACOLPooling, self).__init__(**kwargs)
+        super(AcolPooling, self).__init__(**kwargs)
         self.units = units 
     
     def build(self, input_shape):
