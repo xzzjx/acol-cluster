@@ -11,7 +11,7 @@ import numpy as np
 
 def identity_vstack(shape):
         a = np.identity(shape[1])
-        for i in range(1, shape[0]/shape[1]):
+        for i in range(1, shape[0]//shape[1]):
             a = np.concatenate((a, np.identity(shape[1])), axis=0)
         return K.variable(a)
 

@@ -6,8 +6,9 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten, Layer
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from regularizer import activity_acol
 from acolpooling import AcolPooling
+import tensorflow as tf
 
-def define_model(input_shape, nb_classes, acol_params, truncated=False):
+def define_cnn(input_shape, nb_classes, acol_params, truncated=False):
     '''
     返回定义好的模型
     '''
@@ -15,13 +16,13 @@ def define_model(input_shape, nb_classes, acol_params, truncated=False):
     '''
     前L-2层
     '''
-    model.add(Convolution2D(32, 3, 3, activation='relu', border_mode='same', input_shape=input_shape))
-    model.add(Convolution2D(32, 3, 3, activation='relu', border_mode='same'))
+    model.add(Convolution2D(32, (3, 3), activation='relu', border_mode='same', input_shape=input_shape))
+    model.add(Convolution2D(32, (3, 3), activation='relu', border_mode='same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.2))
 
-    model.add(Convolution2D(64, 3, 3, activation='relu', border_mode='same'))
-    model.add(Convolution2D(64, 3, 3, activation='relu', border_mode='same'))
+    model.add(Convolution2D(64, (3, 3), activation='relu', border_mode='same'))
+    model.add(Convolution2D(64, (3, 3), activation='relu', border_mode='same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.3))
 
@@ -43,7 +44,8 @@ def define_model(input_shape, nb_classes, acol_params, truncated=False):
         Z是softmax的输入，是L-1 layer的输出
         L-1层的softmax
         '''
-        model.add(Activation('softmax', name='L-1_activation'))
+        # model.add(Activation(activation='softmax', name='L-1_activation'))
+        model.add(Activation(tf.nn.softmax, name='L-1_softmax'))
         '''
         L层，linear层，将同一个parent的softmax nodes相加
         '''

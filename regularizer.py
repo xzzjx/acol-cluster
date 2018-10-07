@@ -5,6 +5,7 @@
 
 from keras.regularizers import Regularizer
 from keras import backend as K 
+import numpy as np
 def activity_acol(c1, c2, c3, c4, ks):
     return AcolRegularizer(c1, c2, c3, c4, ks)
 class AcolRegularizer(Regularizer):
@@ -25,7 +26,7 @@ class AcolRegularizer(Regularizer):
         '''
         Z = x # shape=(batch_size, nb_classes*ks)
         n = K.int_shape(Z)[1]
-        B = K.reshape(Z*k.cast(Z>0., K.floatx()), (-1, self.ks, n//self.ks)) # B.shape=(batch_size, ks, nb_classes)
+        B = K.reshape(Z*K.cast(Z>0., K.floatx()), (-1, self.ks, n//self.ks)) # B.shape=(batch_size, ks, nb_classes)
 
         # N = B.T*B, shape= n*n, n = nb_classes*ks
         # GAR项迫使矩阵N变为identity matrix
@@ -36,14 +37,42 @@ class AcolRegularizer(Regularizer):
         affinity: ks-1项intra-parent
         '''
         N = K.tf.tensordot(B, B, axes=[0, 0]) # N.shape=ks*np*ks*np 相当于B.T*B
-        def calculate_partial_affinity_balance(i):
-            N_partial = N[:, i, :, i]
-            v = K.tf.linalg.diag_part(N_partial)
-            V = K.dot(v.T, v)
-            affinity = (K.sum(N_partial) - K.tf.trace(N_partial)) / ((self.ks-1)*K.tf.trace(N_partial)+K.epsilon())
-            balance = (K.sum(V) - K.tf.trace(V)) / ((self.ks-1)*K.tf.trace(V)+K.epsilon())
-            return affinity, balance
-        partials = K.tf.scan(calculate_partial_affinity_balance, [K.tf.range(N.shape[1])])
+        # print(N)
+        def gar_func(x):
+            # print(K.int_shape(x))
+            affinities = []
+            balances = []
+            for i in range(x.shape[1]):
+                x_partial = x[:, i, :, i]
+                affinity = (np.sum(x_partial) - np.trace(x_partial)) / ((self.ks-1)*np.trace(x_partial)+1e-07)
+                v = np.reshape(np.diag(x_partial), (1, self.ks))
+                V = np.dot(v.T, v)
+                balance = (np.sum(V)-np.trace(V)) / ((self.ks-1)*np.trace(V)+1e-07)
+                affinities.append(affinity)
+                balances.append(balance)
+            return np.array(affinities, dtype=np.float32), np.array(balances, dtype=np.float32)
+        
+        affinities, balances = K.tf.py_func(gar_func, [N], [K.tf.float32, K.tf.float32])
+
+        # def calculate_partial_affinity_balance(_, i):
+        #     print("start cal")
+        #     print(K.int_shape(N))
+        #     # print(K.eval(i))
+        #     N_partial = N[:, i, :, i]
+        #     # print(N_partial.shape)
+        #     v = K.reshape(K.tf.linalg.diag_part(N_partial), [1, self.ks])
+        #     # print(K.eval(v))
+        #     print(K.int_shape(v))
+        #     V = K.dot(K.transpose(v), v)
+        #     print(K.int_shape(V))
+        #     affinity = (K.sum(N_partial) - K.tf.trace(N_partial)) / ((self.ks-1)*K.tf.trace(N_partial)+K.epsilon())
+        #     balance = (K.sum(V) - K.tf.trace(V)) / ((self.ks-1)*K.tf.trace(V)+K.epsilon())
+        #     # print(affinity)
+        #     # print(balance)
+        #     return (affinity, balance)
+        # partials = K.tf.scan(calculate_partial_affinity_balance, K.tf.range(N.shape[1]), initializer=K.tf.range(2))
+        
+        
         # def cond(i, np, k, N, affinities, balances):
         #     return K.tf.less(i, np)
         # def body(i, np, k, N, affinities, balances):
@@ -58,16 +87,21 @@ class AcolRegularizer(Regularizer):
         # np = K.tf.constant(self.nb_classes, dtype=K.tf.int32)
         # k = K.tf.constant(self.ks, dtype=K.tf.int32)
         # partials = tf.while_loop(cond, body, [i, np, k, N, affinities, balances])
-        affinity = K.means(partials[0])
-        balance = K.means(partials[1])
+        
+        # affinity = K.mean(partials[0][1:])
+        # balance = K.mean(partials[1][1:])
+        
+        affinity = K.mean(affinities)
+        balance = K.mean(balances)
+        # print(K.eval(affinity))
         regularization = K.variable(0, dtype=K.floatx())
-        if self.c1.get_value():
+        if K.get_value(self.c1):
             regularization += self.c1*affinity
-        if self.c2.get_value():
+        if K.get_value(self.c2):
             regularization += self.c2*(1-balance)
-        if self.c3.get_value():
+        if K.get_value(self.c3):
             regularization += self.c3*balance
-        if self.c4.get_value():
+        if K.get_value(self.c4):
             regularization += K.sum(self.c4*K.square(Z))
         self.affinity = affinity
         self.balance = balance

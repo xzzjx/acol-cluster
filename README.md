@@ -11,5 +11,5 @@ Todo List:
 - [x] train
 - [ ] get latent representation
 - [x] acol pool
-- [ ] mnist test
+- [x] mnist test
 - [ ] svhn test
