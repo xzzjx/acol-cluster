@@ -1,1 +1,3 @@
 *.pyc
+latents/
+weights/

@@ -9,7 +9,8 @@ from lalnet import define_cnn
 from keras.optimizers import SGD
 from keras.datasets import mnist
 from transform import get_pseudos
-from get_representation import get_F
+from get_representation import get_Z
+import os
 
 nb_pseudos = 8
 nb_clusters_per_pseudo = 20
@@ -33,13 +34,19 @@ nb_epochs = 2
 batch_size = 128
 print(input_shape)
 model_params = (input_shape, nb_pseudos, (nb_clusters_per_pseudo,c1,c2,c3,c4))
-weight_save_path = './weights/mnist_weights.h5'
+weights_dir = './weights'
+if not os.path.exists(weights_dir):
+    os.makedirs(weights_dir)
+weight_save_path = weights_dir+'/mnist_weights.h5'
 
-training.train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo,
-                                            define_cnn, model_params, 
-                                            sgd, train_X, train_y, get_pseudos, nb_epochs, batch_size, save_path=weight_save_path)
+# training.train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo,
+                                            # define_cnn, model_params, 
+                                            # sgd, train_X, train_y, get_pseudos, nb_epochs, batch_size, save_path=weight_save_path)
 
-latent_trainX_save_path = './latents/mnist_trainX.npy'
-latent_testX_save_path = './latents/mnist_testX.npy'
-get_F(define_cnn, model_params, sgd, weight_save_path, latent_trainX_save_path, train_X)
-get_F(define_cnn, model_params, sgd, weight_save_path, latent_testX_save_path, test_X)
+latents_dir = './latents'
+if not os.path.exists(latents_dir):
+    os.makedirs(latents_dir)
+latent_trainX_save_path = latents_dir + '/mnist_trainX.npy'
+latent_testX_save_path = latents_dir + '/mnist_testX.npy'
+get_Z(define_cnn, model_params, sgd, weight_save_path, latent_trainX_save_path, train_X)
+get_Z(define_cnn, model_params, sgd, weight_save_path, latent_testX_save_path, test_X)
