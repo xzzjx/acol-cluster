@@ -9,7 +9,7 @@ Todo List:
 - [x] transformation data for pseudo label
 - [x] GAR regularization
 - [x] train
-- [ ] get latent representation
+- [x] get latent representation
 - [x] acol pool
 - [x] mnist test
 - [ ] svhn test

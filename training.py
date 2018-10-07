@@ -11,7 +11,7 @@ from keras.utils.np_utils import to_categorical
 # from keras.models import load_model
 
 def train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo, define_model, model_params, optimizer,
-                                        X_train, y_train,
+                                        X_train,
                                         get_pseudos,
                                         nb_epochs, batch_size,
                                         validation_set_size=None,
