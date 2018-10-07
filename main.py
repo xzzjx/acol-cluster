@@ -9,6 +9,7 @@ from lalnet import define_cnn
 from keras.optimizers import SGD
 from keras.datasets import mnist
 from transform import get_pseudos
+from get_representation import get_F
 
 nb_pseudos = 8
 nb_clusters_per_pseudo = 20
@@ -25,11 +26,20 @@ mnist
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
 input_shape = (train_X[0].shape[0], train_X.shape[1], 1) 
 train_X = train_X.reshape([-1, input_shape[0], input_shape[1], input_shape[2]])
+test_X = test_X.reshape([-1, input_shape[0], input_shape[1], input_shape[2]])
 
-nb_epochs = 200
+nb_epochs = 2
 # nb_dpoints = 40
 batch_size = 128
 print(input_shape)
+model_params = (input_shape, nb_pseudos, (nb_clusters_per_pseudo,c1,c2,c3,c4))
+weight_save_path = './weights/mnist_weights.h5'
+
 training.train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo,
-                                            define_cnn, (input_shape, nb_pseudos, (nb_clusters_per_pseudo,c1,c2,c3,c4)), 
-                                            sgd, train_X, train_y, get_pseudos, nb_epochs, batch_size)
+                                            define_cnn, model_params, 
+                                            sgd, train_X, train_y, get_pseudos, nb_epochs, batch_size, save_path=weight_save_path)
+
+latent_trainX_save_path = './latents/mnist_trainX.npy'
+latent_testX_save_path = './latents/mnist_testX.npy'
+get_F(define_cnn, model_params, sgd, weight_save_path, latent_trainX_save_path, train_X)
+get_F(define_cnn, model_params, sgd, weight_save_path, latent_testX_save_path, test_X)

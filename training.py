@@ -25,7 +25,7 @@ def train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo, define_model, model_p
     # nb_classes = len(np.unique(y_train))
 
     run_start = time.time()
-    print(*model_params)
+    # print(*model_params)
     model = define_model(*model_params)
 
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['acc'])
@@ -45,7 +45,7 @@ def pseudo_generator(get_pseudos, X_train, nb_classes, batch_size):
     count = 0
     list_x = []
     list_y = []
-    print(nb_classes)
+    # print(nb_classes)
     while True:
         for x in X_train:
             for y in range(nb_classes):
