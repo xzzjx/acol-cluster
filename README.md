@@ -12,4 +12,4 @@ Todo List:
 - [x] get latent representation
 - [x] acol pool
 - [x] mnist test
-- [ ] svhn test
+- [x] svhn test
