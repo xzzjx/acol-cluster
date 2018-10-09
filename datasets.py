@@ -1,5 +1,6 @@
 from __future__ import division
 import numpy as np
+import os
 
 def make_reuters_data(data_dir):
     np.random.seed(1234)
@@ -173,3 +174,20 @@ def load_svhn(data_path='../DEC-keras-master/data/svhn/'):
     # labels = np.concatenate((train_labels, ext_labels, test_labels))
     labels = np.concatenate((train_labels, test_labels))
     return data, labels, train_data.shape[0], test_data.shape[0]
+
+def load_svhn_labels(data_path='../DEC-keras-master/data/svhn/'):
+    '''
+    get svhn labels
+    '''
+    labels_file_names = ['train_labels.npy', 'test_labels.npy', 'extra_labels.npy']
+    file_names = ['train_32x32.mat', 'test_32x32.mat', 'extra_32x32.mat']
+    labels = []    
+    for i in range(3):
+        full_name = data_path + labels_file_names[i] 
+        if not os.path.exists(full_name):
+            X, y = extract_svhn(data_path + file_names[i])
+            np.save(full_name, y)
+        else:
+            y = np.load(full_name)
+        labels.append(y)
+    return labels

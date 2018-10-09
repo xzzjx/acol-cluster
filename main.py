@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.95, nesterov=True)
 
-    nb_epochs = 200
+    nb_epochs = 100
     # nb_dpoints = 40
     batch_size = 128
 
@@ -65,8 +65,8 @@ if __name__ == '__main__':
     
     model_params = (input_shape, nb_pseudos, (nb_clusters_per_pseudo,c1,c2,c3,c4))
     weight_save_path = weights_dir+'/'+dataset+'_weights.h5'
-    latent_trainX_save_path = latents_dir + '/'+ dataset + '_trainX.npy'
-    latent_testX_save_path = latents_dir + '/' + dataset + '_testX.npy'
+    latent_trainX_save_path = latents_dir + '/'+ dataset + '_trainXl-1.npy'
+    latent_testX_save_path = latents_dir + '/' + dataset + '_testXl-1.npy'
     
 
     training.train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo,

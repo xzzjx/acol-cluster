@@ -14,8 +14,10 @@ def get_Z(define_model, model_params, optimizer, weight_path, latent_save_path, 
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['acc'])
 
     model.load_weights(weight_path)
+    # Z_model = Model(inputs=model.input,
+    #                                 outputs=model.get_layer('L-1_softmax').input)
     Z_model = Model(inputs=model.input,
-                                    outputs=model.get_layer('L-1_softmax').input)
+                                    outputs=model.get_layer('L-1').output)
     latent_X = Z_model.predict(train_X)
     np.save(latent_save_path, latent_X)
     # return latent_X
