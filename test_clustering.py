@@ -55,6 +55,12 @@ def acc(y_true, y_pred):
     acc = np.sum(y_pred == y_true) / y_true.shape[0]
     return acc
 
+def cluster_and_acc(train_X, train_y):
+    y_pred = cluster(train_X)
+    print(y_pred.shape)
+
+    accuracy = acc(train_y, y_pred)
+    print("acol cluster accuracy is", accuracy)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

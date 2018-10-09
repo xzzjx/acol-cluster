@@ -102,7 +102,7 @@ class AcolRegularizer(Regularizer):
         if K.get_value(self.c3):
             regularization += self.c3*balance
         if K.get_value(self.c4):
-            regularization += K.sum(self.c4*K.square(Z)) #TODO:
+            regularization += K.sum(self.c4*K.square(B))
         self.affinity = affinity
         self.balance = balance
         self.reg = regularization 

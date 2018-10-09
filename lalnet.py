@@ -27,7 +27,7 @@ def define_cnn(input_shape, nb_classes, acol_params, truncated=False):
     model.add(Dropout(0.3))
 
     model.add(Flatten())
-    model.add(Dense(2048, activation='relu'))
+    model.add(Dense(2048, activation='relu', name='L-2'))
     model.add(Dropout(0.5))
     '''
     在F=Y^(L-2)上做聚类
