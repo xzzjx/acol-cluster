@@ -8,14 +8,11 @@ from regularizer import activity_acol
 from acolpooling import AcolPooling
 import tensorflow as tf
 
-def define_cnn(input_shape, nb_classes, acol_params, truncated=False):
+def define_cnn(input_shape, nb_classes, acol_params):
     '''
-    返回定义好的模型
+    return cnn model
     '''
     model = Sequential()
-    '''
-    前L-2层
-    '''
     model.add(Convolution2D(32, (3, 3), activation='relu', border_mode='same', input_shape=input_shape))
     model.add(Convolution2D(32, (3, 3), activation='relu', border_mode='same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -29,26 +26,18 @@ def define_cnn(input_shape, nb_classes, acol_params, truncated=False):
     model.add(Flatten())
     model.add(Dense(2048, activation='relu', name='L-2'))
     model.add(Dropout(0.5))
+    ks, c1, c2, c3, c4 = acol_params
+    model.add(Dense(nb_classes*ks, activity_regularizer=activity_acol(c1, c2, c3, c4, ks), name='L-1'))
     '''
-    在F=Y^(L-2)上做聚类
+    Z = acol(Y^(L-2)*W^(L-1)+b^(L-1))
+    Z is L-1_softmax layer's input 
+    do cluster on Z
     '''
-    if not truncated:
-        # 对第L-2层的输出做acol regularizer
-        ks, c1, c2, c3, c4 = acol_params
-        '''
-        L-1层的logit，并对其做acol
-        '''
-        model.add(Dense(nb_classes*ks, activity_regularizer=activity_acol(c1, c2, c3, c4, ks), name='L-1'))
-        '''
-        Z = acol(Y^(L-2)*W^(L-1)+b^(L-1))
-        Z是softmax的输入，是L-1 layer的输出
-        L-1层的softmax
-        '''
-        # model.add(Activation(activation='softmax', name='L-1_activation'))
-        model.add(Activation(tf.nn.softmax, name='L-1_softmax'))
-        '''
-        L层，linear层，将同一个parent的softmax nodes相加
-        '''
-        model.add(AcolPooling(nb_classes, name='AcolPooling'))
+    # model.add(Activation(activation='softmax', name='L-1_activation'))
+    model.add(Activation(tf.nn.softmax, name='L-1_softmax'))
+    '''
+    L-th layer is Linear layer to add softmax nodes of one parent
+    '''
+    model.add(AcolPooling(nb_classes, name='AcolPooling'))
     return model
 

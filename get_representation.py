@@ -1,7 +1,7 @@
 #coding: utf-8
 
 '''
-获取第L-1层的logit
+get latent representation
 '''
 from keras.models import Model
 import numpy as np 

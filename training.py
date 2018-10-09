@@ -19,9 +19,7 @@ def train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo, define_model, model_p
                                         validation_set_size=None,
                                         test_on_test_set=True, return_model=False,
                                         save_path=None):
-    '''
-    暂时没有test
-    '''
+
     # nb_all_clusters = nb_clusters_per_pseudo * nb_pseudos
     
     # nb_classes = len(np.unique(y_train))
@@ -42,6 +40,7 @@ def train_with_pseudos(nb_pseudos, nb_clusters_per_pseudo, define_model, model_p
                                                     #  steps_per_epoch, nb_epochs)
         history = model.fit_generator(pseudo_generator(get_pseudos, X_train, nb_pseudos, batch_size),
                                                      steps_per_epoch, epochs_per_dpoints)
+        # get cluster accuracy
         latent_model.set_weights(model.get_weights())
         latent_X = latent_model.predict(X_train)
         y_pred = cluster(latent_X)

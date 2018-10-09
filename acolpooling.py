@@ -1,7 +1,7 @@
 #coding: utf-8
 
 '''
-实现ACOL Pooling
+implement ACOL Pooling
 '''
 
 from __future__ import division, print_function, unicode_literals
@@ -17,7 +17,7 @@ def identity_vstack(shape):
 
 class AcolPooling(Layer):
     '''
-    将同一个parent的softmax node相加
+    add softmax node of one parent
     '''
     def __init__(self, units, name='AcolPooling', **kwargs):
         super(AcolPooling, self).__init__(**kwargs)

@@ -1,6 +1,6 @@
 #coding: utf-8
 '''
-定义acol regularizer
+define acol regularizer
 '''
 
 from keras.regularizers import Regularizer
@@ -10,7 +10,7 @@ def activity_acol(c1, c2, c3, c4, ks):
     return AcolRegularizer(c1, c2, c3, c4, ks)
 class AcolRegularizer(Regularizer):
     '''
-    定义Acol Regularizer
+    define Acol Regularizer
     https://github.com/keras-team/keras/blob/master/keras/regularizers.py
     '''
     def __init__(self, c1, c2, c3, c4, ks):
@@ -21,9 +21,6 @@ class AcolRegularizer(Regularizer):
         self.ks = ks
 
     def __call__(self, x):
-        '''
-        x是层的输出
-        '''
         Z = x # shape=(batch_size, nb_classes*ks)
         n = K.int_shape(Z)[1]
         B = K.reshape(Z*K.cast(Z>0., K.floatx()), (-1, self.ks, n//self.ks)) # B.shape=(batch_size, ks, nb_classes)
@@ -33,10 +30,8 @@ class AcolRegularizer(Regularizer):
         # affinity惩罚矩阵N的非对角线元素，尽量使得一个样本分配只到一个softmax node的概率为1
         # balance项尽量使得矩阵N的对角线元素相等，避免最后塌缩到一个小于n的空间
 
-        '''
-        affinity: ks-1项intra-parent
-        '''
-        N = K.tf.tensordot(B, B, axes=[0, 0]) # N.shape=ks*np*ks*np 相当于B.T*B
+
+        N = K.tf.tensordot(B, B, axes=[0, 0]) # N.shape=ks*np*ks*np same as B.T*B
         # print(N)
         def gar_func(x):
             # print(K.int_shape(x))

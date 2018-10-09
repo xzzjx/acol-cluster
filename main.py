@@ -1,7 +1,7 @@
 #coding: utf-8
 
 '''
-主测试
+main function
 '''
 
 import training
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.95, nesterov=True)
 
-    nb_epochs = 5
+    nb_epochs = 100
     # nb_dpoints = 40
     batch_size = 128
 

@@ -1,6 +1,6 @@
 #coding: utf-8
 '''
-获得聚类的效果
+test cluster
 '''
 from __future__ import division, print_function, unicode_literals
 from sklearn.cluster import KMeans
@@ -11,7 +11,7 @@ from keras.datasets import mnist
 
 def cluster(X):
     '''
-    对data聚类，得到预测的y
+    cluster on X
     '''
     est = KMeans(n_clusters=10)
     y_pred = est.fit_predict(X)
@@ -40,7 +40,7 @@ def acc(y_true, y_pred):
 
     def assign_label(y_true, y_pred):
         '''
-        为簇分配真实标签
+        assign label to cluster
         '''
         correct_label = np.zeros_like(y_pred, dtype=np.int32)
         for cluster in range(y_pred.max()+1):
@@ -49,10 +49,11 @@ def acc(y_true, y_pred):
         return correct_label
     
     y_pred = assign_label(y_true, y_pred)
-    print(y_pred[:10])
-    print(y_true[:10])
-    # 计算ACC
+    # print(y_pred[:10])
+    # print(y_true[:10])
+    # compute ACC
     acc = np.sum(y_pred == y_true) / y_true.shape[0]
+    print("acol cluster accuracy is", acc)
     return acc
 
 def cluster_and_acc(train_X, train_y):
